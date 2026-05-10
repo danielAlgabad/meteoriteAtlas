@@ -64,7 +64,9 @@ class CsvDataLoader:
         year = None
         if raw := row.get("year", "").strip():
             try:
-                year = int(raw[:4])
+                parsed = int(raw[:4])
+                if parsed <= 2026:
+                    year = parsed
             except (ValueError, TypeError):
                 pass
 
