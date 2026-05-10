@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.responses import JSONResponse
 
 from application.use_cases import (
     GetMeteoriteUseCase,
@@ -7,8 +6,10 @@ from application.use_cases import (
     GetStatsUseCase,
     SearchMeteoritesUseCase,
 )
+from domain.meteorite.entity import Meteorite
 from domain.meteorite.repository import MeteoriteFilters
 from domain.shared.exceptions import MeteoriteNotFoundError
+from interfaces.api.deps import get_repo
 from interfaces.api.schemas.meteorite import (
     MeteoritePageResponse,
     MeteoriteResponse,
@@ -18,7 +19,7 @@ from interfaces.api.schemas.meteorite import (
 router = APIRouter(prefix="/meteorites", tags=["meteorites"])
 
 
-def _to_response(m) -> MeteoriteResponse:
+def _to_response(m: Meteorite) -> MeteoriteResponse:
     return MeteoriteResponse(
         id=m.id,
         name=m.name,
@@ -42,7 +43,7 @@ async def list_meteorites(
     year_to: int | None = Query(None),
     fall: str | None = Query(None, pattern="^(Fell|Found)$"),
     meteorite_class: str | None = Query(None),
-    use_case: GetMeteoritesUseCase = Depends(),
+    repo=Depends(get_repo),
 ):
     filters = MeteoriteFilters(
         page=page,
@@ -54,7 +55,7 @@ async def list_meteorites(
         fall=fall,
         meteorite_class=meteorite_class,
     )
-    result = await use_case.execute(filters)
+    result = await GetMeteoritesUseCase(repo).execute(filters)
     return MeteoritePageResponse(
         items=[_to_response(m) for m in result.items],
         total=result.total,
@@ -65,8 +66,8 @@ async def list_meteorites(
 
 
 @router.get("/stats", response_model=MeteoriteStatsResponse)
-async def get_stats(use_case: GetStatsUseCase = Depends()):
-    stats = await use_case.execute()
+async def get_stats(repo=Depends(get_repo)):
+    stats = await GetStatsUseCase(repo).execute()
     return MeteoriteStatsResponse(**stats.__dict__)
 
 
@@ -74,19 +75,19 @@ async def get_stats(use_case: GetStatsUseCase = Depends()):
 async def search_meteorites(
     q: str = Query(..., min_length=2),
     limit: int = Query(20, ge=1, le=100),
-    use_case: SearchMeteoritesUseCase = Depends(),
+    repo=Depends(get_repo),
 ):
-    results = await use_case.execute(q, limit)
+    results = await SearchMeteoritesUseCase(repo).execute(q, limit)
     return [_to_response(m) for m in results]
 
 
 @router.get("/{meteorite_id}", response_model=MeteoriteResponse)
 async def get_meteorite(
     meteorite_id: int,
-    use_case: GetMeteoriteUseCase = Depends(),
+    repo=Depends(get_repo),
 ):
     try:
-        meteorite = await use_case.execute(meteorite_id)
+        meteorite = await GetMeteoriteUseCase(repo).execute(meteorite_id)
         return _to_response(meteorite)
     except MeteoriteNotFoundError:
         raise HTTPException(status_code=404, detail=f"Meteorite {meteorite_id} not found")

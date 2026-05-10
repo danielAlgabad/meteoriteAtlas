@@ -36,6 +36,8 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
     logger.info("Database ready")
 
+    app.state.repo = repo
+
     count = await repo.count()
     if count == 0:
         logger.info("Empty database — performing initial NASA sync...")
