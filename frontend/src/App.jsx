@@ -1,11 +1,11 @@
-import { useGlobeData } from './hooks/useMeteorities'
+import { useGlobeData, useStats } from './hooks/useMeteorities'
 import { useGlobe } from './hooks/useGlobe'
 import { Globe } from './components/Globe/Globe'
 import { FilterPanel } from './components/FilterPanel/FilterPanel'
 import { MeteoriteDetail } from './components/MeteoriteDetail/MeteoriteDetail'
 import { Timeline } from './components/Timeline/Timeline'
 
-function Header({ pointCount, isLoading }) {
+function Header({ pointCount, isLoading, total }) {
   const { isFilterPanelOpen, toggleFilterPanel } = useGlobe()
 
   return (
@@ -24,12 +24,16 @@ function Header({ pointCount, isLoading }) {
 
       <div className="flex items-center gap-4">
         {!isLoading && pointCount > 0 && (
-          <span className="text-xs text-slate-500 tabular-nums">
-            {pointCount.toLocaleString()} points
+          <span
+            className="text-xs text-slate-500 tabular-nums"
+            title="Impacts shown on globe (filtered to those with GPS coordinates, capped at 10,000)"
+          >
+            {pointCount.toLocaleString()} impacts on globe
+            {total ? ` / ${total.toLocaleString()} total` : ''}
           </span>
         )}
         {isLoading && (
-          <span className="text-xs text-slate-600 animate-pulse">Loading…</span>
+          <span className="text-xs text-slate-600 animate-pulse">Loading impacts…</span>
         )}
         <button
           onClick={toggleFilterPanel}
@@ -49,6 +53,7 @@ function Header({ pointCount, isLoading }) {
 
 export default function App() {
   const { data: globeData, isLoading } = useGlobeData()
+  const { data: stats } = useStats()
   const { selectedId, isFilterPanelOpen } = useGlobe()
 
   const meteorites = globeData || []
@@ -59,7 +64,7 @@ export default function App() {
       <Globe meteorites={meteorites} isLoading={isLoading} />
 
       {/* Header */}
-      <Header pointCount={meteorites.length} isLoading={isLoading} />
+      <Header pointCount={meteorites.length} isLoading={isLoading} total={stats?.total} />
 
       {/* Right panel — detail or filters */}
       <div className="absolute right-4 top-14 bottom-36 z-10 w-72 flex flex-col gap-3 pointer-events-none">

@@ -1,9 +1,17 @@
 import { useRef, useEffect, useMemo, useCallback } from 'react'
+import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useGlobe } from '../../hooks/useGlobe'
 
-const GLOBE_RADIUS = 1.02
+const GLOBE_RADIUS = 1.005
+
+// Reference camera distance — points are sized for this zoom level
+const REF_DIST = 2.8
+
+// Base world-space radius of each point at REF_DIST
 const BASE_SCALE = 0.007
+
+const WHITE = new THREE.Color('#ffffff')
 
 function latLonToVec3(lat, lon, radius) {
   const phi = (90 - lat) * (Math.PI / 180)
@@ -18,77 +26,127 @@ function latLonToVec3(lat, lon, radius) {
 function getMassScale(mass) {
   if (!mass || mass <= 0) return 0.6
   const log = Math.log10(mass)
-  // log scale: 1g→0.6, 1kg→0.9, 1t→1.5, 10t→2.0
-  return Math.min(Math.max(0.4 + log * 0.2, 0.4), 2.8)
+  return Math.min(Math.max(0.4 + log * 0.18, 0.4), 2.2)
 }
 
-const FELL_COLOR = new THREE.Color('#f97316')
-const FOUND_COLOR = new THREE.Color('#22d3ee')
-const UNKNOWN_COLOR = new THREE.Color('#a78bfa')
-const SELECTED_COLOR = new THREE.Color('#ffffff')
-
-export function MeteoritePoints({ meteorites }) {
+// One InstancedMesh per color — avoids vertex-color instability.
+// useFrame patches only the scale diagonal (col-major 0, 5, 10) each frame
+// so points keep a constant apparent screen size as the user zooms.
+// Per-instance color (setColorAt) highlights the selected point in white
+// without altering its size or adding extra geometry.
+function PointGroup({ points, color, onClickPoint, selectedId }) {
   const meshRef = useRef()
-  const { selectedId, setSelectedId } = useGlobe()
+  const baseColor = useMemo(() => new THREE.Color(color), [color])
 
-  const filtered = useMemo(
-    () =>
-      meteorites
-        .filter((m) => m.lat != null && m.lon != null)
-        .slice(0, 10000),
-    [meteorites]
+  const baseScales = useMemo(
+    () => Float32Array.from(points.map((m) => BASE_SCALE * getMassScale(m.mass))),
+    [points]
   )
 
+  // Set initial instance matrices (position + reference scale)
   useEffect(() => {
     const mesh = meshRef.current
-    if (!mesh || filtered.length === 0) return
+    if (!mesh || points.length === 0) return
 
     const matrix = new THREE.Matrix4()
     const position = new THREE.Vector3()
     const quaternion = new THREE.Quaternion()
     const scale = new THREE.Vector3()
-    const color = new THREE.Color()
 
-    filtered.forEach((m, i) => {
+    points.forEach((m, i) => {
       const [x, y, z] = latLonToVec3(m.lat, m.lon, GLOBE_RADIUS)
       position.set(x, y, z)
-      const s = BASE_SCALE * getMassScale(m.mass)
-      scale.setScalar(s)
+      scale.setScalar(baseScales[i])
       matrix.compose(position, quaternion, scale)
       mesh.setMatrixAt(i, matrix)
-
-      if (m.id === selectedId) color.copy(SELECTED_COLOR)
-      else if (m.fall === 'Fell') color.copy(FELL_COLOR)
-      else if (m.fall === 'Found') color.copy(FOUND_COLOR)
-      else color.copy(UNKNOWN_COLOR)
-
-      mesh.setColorAt(i, color)
     })
 
     mesh.instanceMatrix.needsUpdate = true
+    mesh.count = points.length
+  }, [points, baseScales])
+
+  // Recolor instances when selection changes — selected turns white, others stay default.
+  // Material color must be #ffffff so instance color passes through unmodified.
+  useEffect(() => {
+    const mesh = meshRef.current
+    if (!mesh || points.length === 0) return
+
+    points.forEach((m, i) => {
+      mesh.setColorAt(i, m.id === selectedId ? WHITE : baseColor)
+    })
+
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
-    mesh.count = filtered.length
-  }, [filtered, selectedId])
+  }, [points, selectedId, baseColor])
+
+  // Each frame: rescale point sizes to stay visually constant as zoom changes.
+  // Only the diagonal scale elements (col-major indices 0, 5, 10) are updated;
+  // position elements (12, 13, 14) are left untouched — fast and safe.
+  useFrame(({ camera }) => {
+    const mesh = meshRef.current
+    if (!mesh || points.length === 0) return
+
+    const dist = camera.position.length()
+    const zoom = dist / REF_DIST
+    const arr = mesh.instanceMatrix.array
+
+    for (let i = 0; i < mesh.count; i++) {
+      const s = baseScales[i] * zoom
+      const base = i * 16
+      arr[base] = s       // [0][0] scale x
+      arr[base + 5] = s   // [1][1] scale y
+      arr[base + 10] = s  // [2][2] scale z
+    }
+
+    mesh.instanceMatrix.needsUpdate = true
+  })
 
   const handleClick = useCallback(
     (e) => {
       e.stopPropagation()
-      const m = filtered[e.instanceId]
-      if (m) setSelectedId(m.id)
+      const m = points[e.instanceId]
+      if (m) onClickPoint(m.id)
     },
-    [filtered, setSelectedId]
+    [points, onClickPoint]
   )
 
-  if (filtered.length === 0) return null
+  if (points.length === 0) return null
 
   return (
     <instancedMesh
       ref={meshRef}
-      args={[null, null, 10000]}
+      args={[null, null, points.length]}
       onClick={handleClick}
     >
-      <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial vertexColors />
+      <sphereGeometry args={[1, 8, 8]} />
+      <meshBasicMaterial color="#ffffff" transparent opacity={0.78} />
     </instancedMesh>
+  )
+}
+
+export function MeteoritePoints({ meteorites }) {
+  const { selectedId, setSelectedId } = useGlobe()
+
+  const allPoints = useMemo(
+    () => meteorites.filter((m) => m.lat != null && m.lon != null).slice(0, 10000),
+    [meteorites]
+  )
+
+  const { fell, found, other } = useMemo(
+    () => ({
+      fell: allPoints.filter((m) => m.fall === 'Fell'),
+      found: allPoints.filter((m) => m.fall === 'Found'),
+      other: allPoints.filter((m) => m.fall !== 'Fell' && m.fall !== 'Found'),
+    }),
+    [allPoints]
+  )
+
+  if (allPoints.length === 0) return null
+
+  return (
+    <group>
+      <PointGroup points={fell} color="#f97316" onClickPoint={setSelectedId} selectedId={selectedId} />
+      <PointGroup points={found} color="#22d3ee" onClickPoint={setSelectedId} selectedId={selectedId} />
+      <PointGroup points={other} color="#a78bfa" onClickPoint={setSelectedId} selectedId={selectedId} />
+    </group>
   )
 }

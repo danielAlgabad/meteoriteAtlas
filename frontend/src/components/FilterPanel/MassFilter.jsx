@@ -1,68 +1,61 @@
 import { useFilters } from '../../hooks/useFilters'
 
-// Discrete mass breakpoints on a log scale
-const MASS_STEPS = [
-  { value: undefined, label: 'Any' },
-  { value: 1, label: '1 g' },
-  { value: 10, label: '10 g' },
-  { value: 100, label: '100 g' },
-  { value: 1_000, label: '1 kg' },
-  { value: 10_000, label: '10 kg' },
-  { value: 100_000, label: '100 kg' },
-  { value: 1_000_000, label: '1 t' },
-  { value: 10_000_000, label: '10 t' },
-]
-
-function stepIndex(value) {
-  if (value == null) return 0
-  const i = MASS_STEPS.findIndex((s) => s.value === value)
-  return i === -1 ? 0 : i
-}
+const MIN_MASS = 0
+const MAX_MASS = 60_000_000
 
 export function MassFilter() {
   const { filters, setFilter } = useFilters()
 
-  const minIdx = stepIndex(filters.mass_min)
-  const maxIdx = stepIndex(filters.mass_max)
-
   const handleMin = (e) => {
-    const idx = Number(e.target.value)
-    setFilter('mass_min', MASS_STEPS[idx].value)
+    const v = e.target.value === '' ? undefined : parseFloat(e.target.value)
+    setFilter('mass_min', v)
   }
 
   const handleMax = (e) => {
-    const idx = Number(e.target.value)
-    setFilter('mass_max', MASS_STEPS[idx].value)
+    const v = e.target.value === '' ? undefined : parseFloat(e.target.value)
+    setFilter('mass_max', v)
   }
 
   return (
     <div>
-      <p className="filter-label">Mass</p>
-      <div className="space-y-3 mt-2">
-        <div>
-          <div className="flex justify-between text-[10px] text-slate-500 mb-1">
-            <span>Min</span>
-            <span className="text-slate-300">{MASS_STEPS[minIdx].label}</span>
-          </div>
+      <p className="filter-label">Mass (grams)</p>
+      <p className="text-[9px] text-slate-600 mt-0.5">
+        Range: {MIN_MASS.toLocaleString()} g – {MAX_MASS.toLocaleString()} g
+      </p>
+      <div className="flex items-center gap-2 mt-2">
+        <div className="flex-1">
+          <p className="text-[9px] text-slate-500 mb-1">Min</p>
           <input
-            type="range"
-            min={0}
-            max={MASS_STEPS.length - 1}
-            value={minIdx}
+            type="number"
+            min={MIN_MASS}
+            max={MAX_MASS}
+            step={1}
+            placeholder="0"
+            value={filters.mass_min ?? ''}
             onChange={handleMin}
+            className="
+              w-full bg-slate-800/60 border border-slate-700/50 rounded px-2 py-1
+              text-xs text-slate-200 placeholder-slate-600 outline-none
+              focus:border-sky-500/50 transition-colors
+            "
           />
         </div>
-        <div>
-          <div className="flex justify-between text-[10px] text-slate-500 mb-1">
-            <span>Max</span>
-            <span className="text-slate-300">{MASS_STEPS[maxIdx].label}</span>
-          </div>
+        <span className="text-slate-600 text-xs mt-4 flex-shrink-0">—</span>
+        <div className="flex-1">
+          <p className="text-[9px] text-slate-500 mb-1">Max</p>
           <input
-            type="range"
-            min={0}
-            max={MASS_STEPS.length - 1}
-            value={maxIdx}
+            type="number"
+            min={MIN_MASS}
+            max={MAX_MASS}
+            step={1}
+            placeholder="60,000,000"
+            value={filters.mass_max ?? ''}
             onChange={handleMax}
+            className="
+              w-full bg-slate-800/60 border border-slate-700/50 rounded px-2 py-1
+              text-xs text-slate-200 placeholder-slate-600 outline-none
+              focus:border-sky-500/50 transition-colors
+            "
           />
         </div>
       </div>

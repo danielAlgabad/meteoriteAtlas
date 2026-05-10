@@ -3,11 +3,7 @@ import { useStats } from '../../hooks/useMeteorities'
 import { MassFilter } from './MassFilter'
 import { YearFilter } from './YearFilter'
 
-const FALL_OPTIONS = [
-  { value: undefined, label: 'All' },
-  { value: 'Fell', label: 'Fell' },
-  { value: 'Found', label: 'Found' },
-]
+const FALL_TYPES = ['Fell', 'Found']
 
 const LEGEND = [
   { color: '#f97316', label: 'Fell' },
@@ -24,7 +20,7 @@ export function FilterPanel() {
     filters.mass_max != null ||
     filters.year_from != null ||
     filters.year_to != null ||
-    filters.fall != null ||
+    filters.fall?.length > 0 ||
     filters.meteorite_class != null
 
   return (
@@ -69,26 +65,33 @@ export function FilterPanel() {
 
       <hr className="border-slate-700/40" />
 
-      {/* Fall type */}
+      {/* Fall type — multi-select toggle */}
       <div>
         <p className="filter-label">Fall Type</p>
         <div className="flex gap-1.5 mt-2">
-          {FALL_OPTIONS.map((opt) => (
-            <button
-              key={String(opt.value)}
-              onClick={() => setFilter('fall', opt.value)}
-              className={`
-                flex-1 py-1.5 rounded text-[11px] font-medium border transition-all
-                ${
-                  filters.fall === opt.value
+          {FALL_TYPES.map((type) => {
+            const active = (filters.fall || []).includes(type)
+            return (
+              <button
+                key={type}
+                onClick={() => {
+                  const current = filters.fall || []
+                  const next = active
+                    ? current.filter((v) => v !== type)
+                    : [...current, type]
+                  setFilter('fall', next)
+                }}
+                className={`
+                  flex-1 py-1.5 rounded text-[11px] font-medium border transition-all
+                  ${active
                     ? 'bg-sky-500/20 border-sky-500/50 text-sky-300'
-                    : 'bg-slate-800/50 border-slate-700/30 text-slate-400 hover:border-slate-600'
-                }
-              `}
-            >
-              {opt.label}
-            </button>
-          ))}
+                    : 'bg-slate-800/50 border-slate-700/30 text-slate-400 hover:border-slate-600'}
+                `}
+              >
+                {type}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -98,22 +101,65 @@ export function FilterPanel() {
       {/* Year filter */}
       <YearFilter />
 
-      {/* Class search */}
+      {/* Class dropdown */}
       <div>
         <p className="filter-label">Class</p>
-        <input
-          type="text"
-          placeholder="e.g. L5, H4, Iron…"
+        <select
           value={filters.meteorite_class ?? ''}
-          onChange={(e) =>
-            setFilter('meteorite_class', e.target.value || undefined)
-          }
+          onChange={(e) => setFilter('meteorite_class', e.target.value || undefined)}
           className="
-            w-full mt-2 bg-slate-800/60 border border-slate-700/50 rounded px-3 py-1.5
-            text-xs text-slate-200 placeholder-slate-600 outline-none
-            focus:border-sky-500/50 transition-colors
+            w-full mt-2 bg-slate-800/90 border border-slate-700/50 rounded px-2 py-1.5
+            text-xs text-slate-200 outline-none
+            focus:border-sky-500/50 transition-colors cursor-pointer
           "
-        />
+        >
+          <option value="">All classes</option>
+          <optgroup label="Ordinary — H">
+            {['H3', 'H4', 'H5', 'H6', 'H3-4', 'H4-5', 'H5-6', 'H3-6'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Ordinary — L">
+            {['L3', 'L4', 'L5', 'L6', 'L3-4', 'L4-5', 'L5-6', 'L3-6'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Ordinary — LL">
+            {['LL3', 'LL4', 'LL5', 'LL6', 'LL3-4', 'LL4-5', 'LL5-6', 'LL3-6'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Carbonaceous">
+            {['CI1', 'CM1', 'CM2', 'CM1/2', 'CO3', 'CV3', 'CK4', 'CK5', 'CR2', 'CH3'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Iron">
+            {['Iron, IAB-MG', 'Iron, IIIAB', 'Iron, IVA', 'Iron, IVB', 'Iron, IIAB', 'Iron, IIE'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Achondrites">
+            {['Eucrite', 'Howardite', 'Diogenite', 'Ureilite', 'Aubrite', 'Angrite', 'Acapulcoite', 'Lodranite'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Stony-iron">
+            {['Pallasite, PMG', 'Mesosiderite', 'Mesosiderite-A'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Lunar">
+            {['Lunar (anorth)', 'Lunar (bas/anor)', 'Lunar (basalt)', 'Lunar (gabbro)'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Martian">
+            {['Martian (nakhlite)', 'Martian (shergottite)', 'Martian (chassignite)', 'Martian (orthopyroxenite)'].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </optgroup>
+        </select>
       </div>
 
       <hr className="border-slate-700/40" />

@@ -5,7 +5,7 @@ const INITIAL_FILTERS = {
   mass_max: undefined,
   year_from: undefined,
   year_to: undefined,
-  fall: undefined,
+  fall: [],
   meteorite_class: undefined,
   page: 1,
   size: 500,

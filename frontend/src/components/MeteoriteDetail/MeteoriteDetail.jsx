@@ -78,14 +78,21 @@ export function MeteoriteDetail() {
             <Row label="Group" value={meteorite.classification_group} />
             <Row label="Mass" value={formatMass(meteorite.mass)} />
             <Row label="Year" value={meteorite.year} />
-            <Row
-              label="Coordinates"
-              value={
-                meteorite.lat != null
-                  ? `${meteorite.lat.toFixed(4)}°, ${meteorite.lon.toFixed(4)}°`
-                  : null
-              }
-            />
+            <div className="flex justify-between gap-3 py-1.5 border-b border-slate-800/60">
+              <span className="text-[11px] text-slate-500 flex-shrink-0">Coordinates</span>
+              {meteorite.lat != null ? (
+                <a
+                  href={`https://www.google.com/maps?q=${meteorite.lat},${meteorite.lon}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-sky-400 hover:text-sky-300 text-right font-medium transition-colors"
+                >
+                  {meteorite.lat.toFixed(4)}°, {meteorite.lon.toFixed(4)}°
+                </a>
+              ) : (
+                <span className="text-[11px] text-slate-200 text-right font-medium">—</span>
+              )}
+            </div>
           </div>
         </>
       )}

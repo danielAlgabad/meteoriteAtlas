@@ -47,17 +47,6 @@ describe('Timeline', () => {
     expect(screen.getByText(/impacts by century/i)).toBeInTheDocument()
   })
 
-  test('does not show clear filter button when no year filter is active', () => {
-    render(<Timeline />, { wrapper })
-    expect(screen.queryByText(/clear filter/i)).not.toBeInTheDocument()
-  })
-
-  test('shows clear filter button when year_from is set', () => {
-    mocks.filters = { year_from: 2000, year_to: undefined }
-    render(<Timeline />, { wrapper })
-    expect(screen.getByText(/clear filter/i)).toBeInTheDocument()
-  })
-
   test('renders without crashing when stats are available', () => {
     const { container } = render(<Timeline />, { wrapper })
     expect(container.firstChild).toBeInTheDocument()

@@ -20,7 +20,7 @@ vi.mock('../../store', () => {
     mass_max: undefined,
     year_from: undefined,
     year_to: undefined,
-    fall: undefined,
+    fall: [],
     meteorite_class: undefined,
     page: 1,
     size: 500,
@@ -54,10 +54,9 @@ describe('FilterPanel', () => {
     expect(screen.getByText('Filters')).toBeInTheDocument()
   })
 
-  test('displays fall type buttons', () => {
+  test('displays fall type toggle buttons', () => {
     render(<FilterPanel />, { wrapper })
-    expect(screen.getByText('All')).toBeInTheDocument()
-    // "Fell" and "Found" appear in both buttons and legend
+    // "Fell" and "Found" appear in both toggle buttons and legend
     expect(screen.getAllByText('Fell').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Found').length).toBeGreaterThan(0)
   })
@@ -68,9 +67,9 @@ describe('FilterPanel', () => {
     expect(screen.getByText('Observed')).toBeInTheDocument()
   })
 
-  test('shows class input', () => {
+  test('shows class dropdown', () => {
     render(<FilterPanel />, { wrapper })
-    expect(screen.getByPlaceholderText(/L5, H4/i)).toBeInTheDocument()
+    expect(screen.getByText('All classes')).toBeInTheDocument()
   })
 
   test('shows legend with Unknown entry', () => {
