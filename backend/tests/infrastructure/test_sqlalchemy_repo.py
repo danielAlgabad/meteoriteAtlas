@@ -213,7 +213,7 @@ class TestGetStats:
         ])
         stats = await repo.get_stats()
         assert "20th" in stats.by_century
-        assert "21th" in stats.by_century
+        assert "21st" in stats.by_century
 
     async def test_by_class_group(self, repo):
         await repo.save_batch([

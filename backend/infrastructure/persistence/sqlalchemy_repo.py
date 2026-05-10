@@ -94,8 +94,12 @@ class SQLAlchemyMeteoriteRepository:
 
             for year, cls in rows:
                 if year:
-                    century = f"{(year // 100) + 1}th"
-                    by_century[century] += 1
+                    n = (year // 100) + 1
+                    if 11 <= n % 100 <= 13:
+                        suffix = "th"
+                    else:
+                        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+                    by_century[f"{n}{suffix}"] += 1
                 if cls:
                     try:
                         group = MeteoriteClass(cls).group()
