@@ -37,6 +37,7 @@ export function useGlobeData() {
       return [first, ...remaining]
         .flatMap((r) => r.items || [])
         .filter((m) => m.lat != null && m.lon != null)
+        .filter((m) => filters.fall.length === 0 || filters.fall.includes(m.fall))
         .slice(0, 10000)
     },
     staleTime: 1000 * 60 * 10,

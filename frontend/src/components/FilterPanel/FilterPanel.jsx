@@ -3,7 +3,10 @@ import { useStats } from '../../hooks/useMeteorities'
 import { MassFilter } from './MassFilter'
 import { YearFilter } from './YearFilter'
 
-const FALL_TYPES = ['Fell', 'Found']
+const FALL_TYPES = [
+  { type: 'Fell',  activeClass: 'bg-orange-500/20 border-orange-500/50 text-orange-400' },
+  { type: 'Found', activeClass: 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400' },
+]
 
 const LEGEND = [
   { color: '#f97316', label: 'Fell' },
@@ -20,7 +23,7 @@ export function FilterPanel() {
     filters.mass_max != null ||
     filters.year_from != null ||
     filters.year_to != null ||
-    filters.fall?.length > 0 ||
+    filters.fall?.length === 1 ||
     filters.meteorite_class != null
 
   return (
@@ -69,13 +72,15 @@ export function FilterPanel() {
       <div>
         <p className="filter-label">Fall Type</p>
         <div className="flex gap-1.5 mt-2">
-          {FALL_TYPES.map((type) => {
-            const active = (filters.fall || []).includes(type)
+          {FALL_TYPES.map(({ type, activeClass }) => {
+            const current = filters.fall || []
+            const active = current.includes(type)
+            const isLast = active && current.length === 1
             return (
               <button
                 key={type}
+                disabled={isLast}
                 onClick={() => {
-                  const current = filters.fall || []
                   const next = active
                     ? current.filter((v) => v !== type)
                     : [...current, type]
@@ -84,8 +89,9 @@ export function FilterPanel() {
                 className={`
                   flex-1 py-1.5 rounded text-[11px] font-medium border transition-all
                   ${active
-                    ? 'bg-sky-500/20 border-sky-500/50 text-sky-300'
+                    ? activeClass
                     : 'bg-slate-800/50 border-slate-700/30 text-slate-400 hover:border-slate-600'}
+                  ${isLast ? 'cursor-not-allowed' : ''}
                 `}
               >
                 {type}

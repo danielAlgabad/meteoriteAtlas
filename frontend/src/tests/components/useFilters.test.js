@@ -10,7 +10,7 @@ beforeEach(() => {
       mass_max: undefined,
       year_from: undefined,
       year_to: undefined,
-      fall: [],
+      fall: ['Fell', 'Found'],
       meteorite_class: undefined,
       page: 1,
       size: 500,
@@ -22,7 +22,7 @@ describe('useFilters', () => {
   test('returns initial filter state', () => {
     const { result } = renderHook(() => useFilters())
     expect(result.current.filters.mass_min).toBeUndefined()
-    expect(result.current.filters.fall).toEqual([])
+    expect(result.current.filters.fall).toEqual(['Fell', 'Found'])
     expect(result.current.filters.page).toBe(1)
   })
 
@@ -47,6 +47,6 @@ describe('useFilters', () => {
       result.current.resetFilters()
     })
     expect(result.current.filters.mass_min).toBeUndefined()
-    expect(result.current.filters.fall).toEqual([])
+    expect(result.current.filters.fall).toEqual(['Fell', 'Found'])
   })
 })

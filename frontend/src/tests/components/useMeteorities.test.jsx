@@ -39,7 +39,7 @@ vi.mock('../../services/api', () => ({
 vi.mock('../../store', () => ({
   useStore: vi.fn((selector) =>
     selector({
-      filters: { page: 1, size: 500 },
+      filters: { page: 1, size: 500, fall: ['Fell', 'Found'] },
     })
   ),
 }))

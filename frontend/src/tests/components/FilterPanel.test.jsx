@@ -20,7 +20,7 @@ vi.mock('../../store', () => {
     mass_max: undefined,
     year_from: undefined,
     year_to: undefined,
-    fall: [],
+    fall: ['Fell', 'Found'],
     meteorite_class: undefined,
     page: 1,
     size: 500,
