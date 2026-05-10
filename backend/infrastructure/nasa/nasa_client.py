@@ -8,7 +8,7 @@ from domain.meteorite.value_objects import Coordinates, Mass, MeteoriteClass
 
 logger = logging.getLogger(__name__)
 
-NASA_API_URL = "https://data.nasa.gov/resource/gh4g-9sfh.json"
+NASA_API_URL = "https://data.nasa.gov/docs/legacy/meteorite_landings/gh4g-9sfh.json"
 PAGE_SIZE = 1000
 
 
@@ -23,7 +23,7 @@ class NasaApiClient:
         meteorites: list[Meteorite] = []
         offset = 0
 
-        async with httpx.AsyncClient(timeout=30) as client:
+        async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
             while True:
                 params = {"$limit": PAGE_SIZE, "$offset": offset}
                 logger.info("Fetching NASA records offset=%d", offset)
@@ -45,7 +45,7 @@ class NasaApiClient:
 
     async def fetch_count(self) -> int:
         """Return total record count — used to detect dataset changes cheaply."""
-        async with httpx.AsyncClient(timeout=10) as client:
+        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
             response = await client.get(
                 self._base_url, params={"$select": "count(*)", "$limit": 1}
             )

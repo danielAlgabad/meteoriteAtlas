@@ -41,8 +41,11 @@ async def lifespan(app: FastAPI):
     count = await repo.count()
     if count == 0:
         logger.info("Empty database — performing initial NASA sync...")
-        meteorites = await nasa_client.fetch_all()
-        await repo.save_batch(meteorites)
+        try:
+            meteorites = await nasa_client.fetch_all()
+            await repo.save_batch(meteorites)
+        except Exception:
+            logger.warning("Initial NASA sync failed — server will start with empty database. Retry via scheduler.")
 
     scheduler.start()
     yield
