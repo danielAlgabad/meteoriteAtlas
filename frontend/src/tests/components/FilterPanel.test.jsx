@@ -75,8 +75,9 @@ describe('FilterPanel', () => {
     expect(screen.getByText('All classes')).toBeInTheDocument()
   })
 
-  test('shows legend with Unknown entry', () => {
+  test('shows fall type toggle buttons', () => {
     render(<FilterPanel />, { wrapper })
-    expect(screen.getByText('Unknown')).toBeInTheDocument()
+    expect(screen.getAllByText('Fell').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Found').length).toBeGreaterThan(0)
   })
 })

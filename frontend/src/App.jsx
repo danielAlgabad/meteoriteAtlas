@@ -77,7 +77,7 @@ export default function App() {
           </div>
         )}
         {isFilterPanelOpen && !selectedId && (
-          <div className="pointer-events-auto flex-1 min-h-0">
+          <div className="pointer-events-auto">
             <FilterPanel />
           </div>
         )}

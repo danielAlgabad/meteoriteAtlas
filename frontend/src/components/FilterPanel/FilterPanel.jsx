@@ -11,11 +11,6 @@ const FALL_TYPES = [
   { type: 'Found', activeClass: 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400' },
 ]
 
-const LEGEND = [
-  { color: '#f97316', label: 'Fell' },
-  { color: '#22d3ee', label: 'Found' },
-  { color: '#a78bfa', label: 'Unknown' },
-]
 
 export function FilterPanel() {
   const { filters, setFilter, resetFilters } = useFilters()
@@ -33,10 +28,10 @@ export function FilterPanel() {
 
   return (
     <div className="
-      h-full flex flex-col gap-4 p-4
+      flex flex-col gap-4 p-4
       bg-slate-900/85 backdrop-blur-md
       border border-slate-700/30 rounded-xl
-      overflow-y-auto
+      max-h-[calc(100vh-12rem)] overflow-y-auto
     ">
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -173,23 +168,6 @@ export function FilterPanel() {
         </select>
       </div>
 
-      <hr className="border-slate-700/40" />
-
-      {/* Legend */}
-      <div>
-        <p className="filter-label mb-2">Legend</p>
-        <div className="space-y-1.5">
-          {LEGEND.map((item) => (
-            <div key={item.label} className="flex items-center gap-2">
-              <span
-                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                style={{ background: item.color }}
-              />
-              <span className="text-[11px] text-slate-400">{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
 
       <hr className="border-slate-700/40" />
 
