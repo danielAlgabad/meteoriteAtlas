@@ -4,6 +4,7 @@ import { Globe } from './components/Globe/Globe'
 import { FilterPanel } from './components/FilterPanel/FilterPanel'
 import { MeteoriteDetail } from './components/MeteoriteDetail/MeteoriteDetail'
 import { Timeline } from './components/Timeline/Timeline'
+import { WelcomeModal } from './components/WelcomeModal/WelcomeModal'
 
 function Header({ pointCount, isLoading, total }) {
   const { isFilterPanelOpen, toggleFilterPanel } = useGlobe()
@@ -60,6 +61,8 @@ export default function App() {
 
   return (
     <div className="relative w-full h-full bg-space-900">
+      <WelcomeModal />
+
       {/* Full-screen globe */}
       <Globe meteorites={meteorites} isLoading={isLoading} />
 

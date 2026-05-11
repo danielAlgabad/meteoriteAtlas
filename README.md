@@ -20,7 +20,6 @@ cp .env.example .env
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
-API available at `http://localhost:8000` · Interactive docs at `http://localhost:8000/docs`
 
 ### Frontend
 ```bash
@@ -48,5 +47,5 @@ cd frontend && npm run test
 
 ## Data
 
-~45,000 meteorites from the [NASA Meteorite Landing API](https://data.nasa.gov/resource/gh4g-9sfh.json).
-Data is loaded into SQLite on server startup and synced monthly. Records span from 860 AD to ~2013 — this is a scientific catalogue, not a real-time impact detection system.
+~45,000 meteorites from the [NASA Meteorite Landings open dataset](https://data.nasa.gov/dataset/meteorite-landings).
+Records span from 860 AD to ~2013; this is a scientific catalogue, not a real-time impact detection system.
