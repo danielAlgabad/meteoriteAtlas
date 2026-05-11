@@ -127,7 +127,7 @@ export function MeteoritePoints({ meteorites }) {
   const { selectedId, setSelectedId } = useGlobe()
 
   const allPoints = useMemo(
-    () => meteorites.filter((m) => m.lat != null && m.lon != null).slice(0, 10000),
+    () => meteorites.filter((m) => m.lat != null && m.lon != null),
     [meteorites]
   )
 

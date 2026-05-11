@@ -38,16 +38,28 @@ export function MeteoriteDetail() {
         <h2 className="text-sm font-semibold text-slate-100 leading-tight break-words">
           {isLoading ? 'Loading…' : (meteorite?.name ?? 'Unknown')}
         </h2>
-        <button
-          onClick={() => setSelectedId(null)}
-          className="
-            flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center
-            text-slate-500 hover:text-slate-200 hover:bg-slate-700/50 transition-all text-sm
-          "
-          aria-label="Close"
-        >
-          ×
-        </button>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {!isLoading && meteorite && (
+            <a
+              href={`https://www.google.com/search?q=${encodeURIComponent(meteorite.name + ' meteorite')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800/60 border border-slate-700/40 text-slate-400 hover:text-sky-300 hover:border-sky-500/40 transition-all"
+            >
+              More info ↗
+            </a>
+          )}
+          <button
+            onClick={() => setSelectedId(null)}
+            className="
+              w-6 h-6 rounded-full flex items-center justify-center
+              text-slate-500 hover:text-slate-200 hover:bg-slate-700/50 transition-all text-sm
+            "
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
       </div>
 
       {isLoading && (

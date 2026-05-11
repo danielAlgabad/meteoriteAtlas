@@ -1,7 +1,10 @@
 import { useFilters } from '../../hooks/useFilters'
 import { useStats } from '../../hooks/useMeteorities'
+import { useStore } from '../../store'
 import { MassFilter } from './MassFilter'
 import { YearFilter } from './YearFilter'
+
+const POINT_LIMIT_OPTIONS = [2500, 5000, 10000, 20000, 45716]
 
 const FALL_TYPES = [
   { type: 'Fell',  activeClass: 'bg-orange-500/20 border-orange-500/50 text-orange-400' },
@@ -17,6 +20,8 @@ const LEGEND = [
 export function FilterPanel() {
   const { filters, setFilter, resetFilters } = useFilters()
   const { data: stats } = useStats()
+  const pointLimit = useStore((s) => s.pointLimit)
+  const setPointLimit = useStore((s) => s.setPointLimit)
 
   const hasActiveFilters =
     filters.mass_min != null ||
@@ -184,6 +189,31 @@ export function FilterPanel() {
             </div>
           ))}
         </div>
+      </div>
+
+      <hr className="border-slate-700/40" />
+
+      {/* Max visible points */}
+      <div>
+        <div className="flex items-center justify-between gap-2">
+          <p className="filter-label">Max Points</p>
+          <select
+            value={pointLimit}
+            onChange={(e) => setPointLimit(Number(e.target.value))}
+            className="
+              bg-slate-800/90 border border-slate-700/50 rounded px-2 py-1
+              text-xs text-slate-200 outline-none
+              focus:border-sky-500/50 transition-colors cursor-pointer
+            "
+          >
+            {POINT_LIMIT_OPTIONS.map((n) => (
+              <option key={n} value={n}>{n.toLocaleString()}</option>
+            ))}
+          </select>
+        </div>
+        <p className="text-[10px] text-amber-500/60 mt-1.5">
+          Higher values may slow your browser
+        </p>
       </div>
     </div>
   )

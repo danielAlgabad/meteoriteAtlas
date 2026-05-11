@@ -19,6 +19,9 @@ export const useStore = create((set) => ({
     })),
   resetFilters: () => set({ filters: { ...INITIAL_FILTERS } }),
 
+  pointLimit: 10000,
+  setPointLimit: (limit) => set({ pointLimit: limit }),
+
   selectedId: null,
   setSelectedId: (id) => set({ selectedId: id }),
 
