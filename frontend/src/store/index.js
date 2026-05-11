@@ -28,4 +28,10 @@ export const useStore = create((set) => ({
   isFilterPanelOpen: true,
   toggleFilterPanel: () =>
     set((state) => ({ isFilterPanelOpen: !state.isFilterPanelOpen })),
+
+  language: localStorage.getItem('meteorite_atlas_lang') || 'en',
+  setLanguage: (lang) => {
+    localStorage.setItem('meteorite_atlas_lang', lang)
+    set({ language: lang })
+  },
 }))

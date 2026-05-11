@@ -1,5 +1,6 @@
 import { useGlobe } from '../../hooks/useGlobe'
 import { useMeteoriteDetail } from '../../hooks/useMeteorities'
+import { useT } from '../../hooks/useLanguage'
 
 function formatMass(grams) {
   if (grams == null) return '—'
@@ -23,6 +24,7 @@ function Row({ label, value }) {
 export function MeteoriteDetail() {
   const { selectedId, setSelectedId } = useGlobe()
   const { data: meteorite, isLoading } = useMeteoriteDetail(selectedId)
+  const t = useT()
 
   if (!selectedId) return null
 
@@ -36,7 +38,7 @@ export function MeteoriteDetail() {
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <h2 className="text-sm font-semibold text-slate-100 leading-tight break-words">
-          {isLoading ? 'Loading…' : (meteorite?.name ?? 'Unknown')}
+          {isLoading ? t('detail.loading') : (meteorite?.name ?? t('detail.unknown'))}
         </h2>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           {!isLoading && meteorite && (
@@ -46,7 +48,7 @@ export function MeteoriteDetail() {
               rel="noopener noreferrer"
               className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800/60 border border-slate-700/40 text-slate-400 hover:text-sky-300 hover:border-sky-500/40 transition-all"
             >
-              More info ↗
+              {t('detail.more_info')}
             </a>
           )}
           <button
@@ -55,7 +57,7 @@ export function MeteoriteDetail() {
               w-6 h-6 rounded-full flex items-center justify-center
               text-slate-500 hover:text-slate-200 hover:bg-slate-700/50 transition-all text-sm
             "
-            aria-label="Close"
+            aria-label={t('detail.close')}
           >
             ×
           </button>
@@ -85,13 +87,13 @@ export function MeteoriteDetail() {
           )}
 
           <div className="space-y-0">
-            <Row label="ID" value={`#${meteorite.id}`} />
-            <Row label="Class" value={meteorite.meteorite_class} />
-            <Row label="Group" value={meteorite.classification_group} />
-            <Row label="Mass" value={formatMass(meteorite.mass)} />
-            <Row label="Year" value={meteorite.year} />
+            <Row label={t('detail.id')} value={`#${meteorite.id}`} />
+            <Row label={t('detail.class')} value={meteorite.meteorite_class} />
+            <Row label={t('detail.group')} value={meteorite.classification_group} />
+            <Row label={t('detail.mass')} value={formatMass(meteorite.mass)} />
+            <Row label={t('detail.year')} value={meteorite.year} />
             <div className="flex justify-between gap-3 py-1.5 border-b border-slate-800/60">
-              <span className="text-[11px] text-slate-500 flex-shrink-0">Coordinates</span>
+              <span className="text-[11px] text-slate-500 flex-shrink-0">{t('detail.coordinates')}</span>
               {meteorite.lat != null ? (
                 <a
                   href={`https://www.google.com/maps?q=${meteorite.lat},${meteorite.lon}`}

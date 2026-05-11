@@ -100,9 +100,20 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
     mesh.instanceMatrix.needsUpdate = true
   })
 
-  const handleClick = useCallback(
+  const downPos = useRef(null)
+
+  const handlePointerDown = useCallback((e) => {
+    downPos.current = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY }
+  }, [])
+
+  const handlePointerUp = useCallback(
     (e) => {
       e.stopPropagation()
+      if (!downPos.current) return
+      const dx = e.nativeEvent.clientX - downPos.current.x
+      const dy = e.nativeEvent.clientY - downPos.current.y
+      downPos.current = null
+      if (dx * dx + dy * dy > 25) return
       const m = points[e.instanceId]
       if (m) onClickPoint(m.id)
     },
@@ -115,7 +126,8 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
     <instancedMesh
       ref={meshRef}
       args={[null, null, points.length]}
-      onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
     >
       <sphereGeometry args={[1, 8, 8]} />
       <meshBasicMaterial color="#ffffff" transparent opacity={0.78} />

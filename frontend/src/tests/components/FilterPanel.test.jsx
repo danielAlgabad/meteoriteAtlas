@@ -40,6 +40,8 @@ vi.mock('../../store', () => {
         toggleFilterPanel: vi.fn(),
         selectedId: null,
         setSelectedId: vi.fn(),
+        language: 'en',
+        setLanguage: vi.fn(),
       })
     ),
   }

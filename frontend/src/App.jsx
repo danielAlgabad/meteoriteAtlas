@@ -1,13 +1,23 @@
 import { useGlobeData, useStats } from './hooks/useMeteorities'
 import { useGlobe } from './hooks/useGlobe'
+import { useStore } from './store'
+import { useT } from './hooks/useLanguage'
 import { Globe } from './components/Globe/Globe'
 import { FilterPanel } from './components/FilterPanel/FilterPanel'
 import { MeteoriteDetail } from './components/MeteoriteDetail/MeteoriteDetail'
 import { Timeline } from './components/Timeline/Timeline'
 import { WelcomeModal } from './components/WelcomeModal/WelcomeModal'
 
+const LANGUAGES = [
+  { code: 'en', flag: '🇬🇧', label: 'English' },
+  { code: 'es', flag: '🇪🇸', label: 'Español' },
+]
+
 function Header({ pointCount, isLoading, total }) {
   const { isFilterPanelOpen, toggleFilterPanel } = useGlobe()
+  const language = useStore((s) => s.language)
+  const setLanguage = useStore((s) => s.setLanguage)
+  const t = useT()
 
   return (
     <header className="
@@ -19,22 +29,31 @@ function Header({ pointCount, isLoading, total }) {
       <div className="flex items-center gap-3">
         <div className="w-1.5 h-6 bg-sky-400 rounded-full" />
         <h1 className="text-base font-bold tracking-[0.15em] text-slate-100 uppercase">
-          Meteorite Atlas
+          {t('header.title')}
         </h1>
+        <div className="flex gap-1.5">
+          {LANGUAGES.map(({ code, flag, label }) => (
+            <button
+              key={code}
+              onClick={() => setLanguage(code)}
+              title={label}
+              className={`text-base leading-none transition-opacity ${language === code ? 'opacity-100' : 'opacity-30 hover:opacity-70'}`}
+            >
+              {flag}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
         {!isLoading && pointCount > 0 && (
-          <span
-            className="text-xs text-slate-500 tabular-nums"
-            title="Impacts shown on globe (filtered to those with GPS coordinates, capped at 10,000)"
-          >
-            {pointCount.toLocaleString()} impacts on globe
-            {total ? ` / ${total.toLocaleString()} total` : ''}
+          <span className="text-xs text-slate-500 tabular-nums">
+            {t('header.impacts', { count: pointCount.toLocaleString() })}
+            {total ? ` ${t('header.total', { count: total.toLocaleString() })}` : ''}
           </span>
         )}
         {isLoading && (
-          <span className="text-xs text-slate-600 animate-pulse">Loading impacts…</span>
+          <span className="text-xs text-slate-600 animate-pulse">{t('header.loading')}</span>
         )}
         <button
           onClick={toggleFilterPanel}
@@ -45,7 +64,7 @@ function Header({ pointCount, isLoading, total }) {
               : 'bg-slate-800/60 border-slate-700/40 text-slate-400 hover:border-slate-600'}
           `}
         >
-          {isFilterPanelOpen ? 'Hide Filters' : 'Filters'}
+          {isFilterPanelOpen ? t('header.hide_filters') : t('header.show_filters')}
         </button>
       </div>
     </header>

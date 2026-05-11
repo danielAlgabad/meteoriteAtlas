@@ -1,6 +1,7 @@
 import { useFilters } from '../../hooks/useFilters'
 import { useStats } from '../../hooks/useMeteorities'
 import { useStore } from '../../store'
+import { useT } from '../../hooks/useLanguage'
 import { MassFilter } from './MassFilter'
 import { YearFilter } from './YearFilter'
 
@@ -17,6 +18,7 @@ export function FilterPanel() {
   const { data: stats } = useStats()
   const pointLimit = useStore((s) => s.pointLimit)
   const setPointLimit = useStore((s) => s.setPointLimit)
+  const t = useT()
 
   const hasActiveFilters =
     filters.mass_min != null ||
@@ -36,14 +38,14 @@ export function FilterPanel() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xs font-semibold text-slate-300 uppercase tracking-widest">
-          Filters
+          {t('filter.title')}
         </h2>
         {hasActiveFilters && (
           <button
             onClick={resetFilters}
             className="text-[10px] text-sky-400 hover:text-sky-300 transition-colors"
           >
-            Reset all
+            {t('filter.reset')}
           </button>
         )}
       </div>
@@ -55,13 +57,13 @@ export function FilterPanel() {
             <p className="text-lg font-bold text-sky-400">
               {stats.total.toLocaleString()}
             </p>
-            <p className="text-[9px] text-slate-500 uppercase tracking-wider mt-0.5">Total</p>
+            <p className="text-[9px] text-slate-500 uppercase tracking-wider mt-0.5">{t('filter.stats.total')}</p>
           </div>
           <div className="bg-slate-800/50 rounded-lg p-2">
             <p className="text-lg font-bold text-orange-400">
               {stats.observed_falling.toLocaleString()}
             </p>
-            <p className="text-[9px] text-slate-500 uppercase tracking-wider mt-0.5">Observed</p>
+            <p className="text-[9px] text-slate-500 uppercase tracking-wider mt-0.5">{t('filter.stats.observed')}</p>
           </div>
         </div>
       )}
@@ -70,7 +72,7 @@ export function FilterPanel() {
 
       {/* Fall type — multi-select toggle */}
       <div>
-        <p className="filter-label">Fall Type</p>
+        <p className="filter-label">{t('filter.fall_type')}</p>
         <div className="flex gap-1.5 mt-2">
           {FALL_TYPES.map(({ type, activeClass }) => {
             const current = filters.fall || []
@@ -109,7 +111,7 @@ export function FilterPanel() {
 
       {/* Class dropdown */}
       <div>
-        <p className="filter-label">Class</p>
+        <p className="filter-label">{t('filter.class')}</p>
         <select
           value={filters.meteorite_class ?? ''}
           onChange={(e) => setFilter('meteorite_class', e.target.value || undefined)}
@@ -119,7 +121,7 @@ export function FilterPanel() {
             focus:border-sky-500/50 transition-colors cursor-pointer
           "
         >
-          <option value="">All classes</option>
+          <option value="">{t('filter.all_classes')}</option>
           <optgroup label="Ordinary — H">
             {['H3', 'H4', 'H5', 'H6', 'H3-4', 'H4-5', 'H5-6', 'H3-6'].map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -174,7 +176,7 @@ export function FilterPanel() {
       {/* Max visible points */}
       <div>
         <div className="flex items-center justify-between gap-2">
-          <p className="filter-label">Max Points</p>
+          <p className="filter-label">{t('filter.max_points')}</p>
           <select
             value={pointLimit}
             onChange={(e) => setPointLimit(Number(e.target.value))}
@@ -190,7 +192,7 @@ export function FilterPanel() {
           </select>
         </div>
         <p className="text-[10px] text-amber-500/60 mt-1.5">
-          Higher values may slow your browser
+          {t('filter.slow_warning')}
         </p>
       </div>
     </div>

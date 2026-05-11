@@ -1,10 +1,12 @@
 import { useFilters } from '../../hooks/useFilters'
+import { useT } from '../../hooks/useLanguage'
 
 const MIN_MASS = 0
 const MAX_MASS = 60_000_000
 
 export function MassFilter() {
   const { filters, setFilter } = useFilters()
+  const t = useT()
 
   const handleMin = (e) => {
     const v = e.target.value === '' ? undefined : parseFloat(e.target.value)
@@ -18,13 +20,13 @@ export function MassFilter() {
 
   return (
     <div>
-      <p className="filter-label">Mass (grams)</p>
+      <p className="filter-label">{t('filter.mass')}</p>
       <p className="text-[9px] text-slate-600 mt-0.5">
-        Range: {MIN_MASS.toLocaleString()} g – {MAX_MASS.toLocaleString()} g
+        {t('filter.mass.range', { min: MIN_MASS.toLocaleString(), max: MAX_MASS.toLocaleString() })}
       </p>
       <div className="flex items-center gap-2 mt-2">
         <div className="flex-1">
-          <p className="text-[9px] text-slate-500 mb-1">Min</p>
+          <p className="text-[9px] text-slate-500 mb-1">{t('filter.mass.min')}</p>
           <input
             type="number"
             min={MIN_MASS}
@@ -42,7 +44,7 @@ export function MassFilter() {
         </div>
         <span className="text-slate-600 text-xs mt-4 flex-shrink-0">—</span>
         <div className="flex-1">
-          <p className="text-[9px] text-slate-500 mb-1">Max</p>
+          <p className="text-[9px] text-slate-500 mb-1">{t('filter.mass.max')}</p>
           <input
             type="number"
             min={MIN_MASS}

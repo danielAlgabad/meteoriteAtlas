@@ -1,4 +1,5 @@
 import { useFilters } from '../../hooks/useFilters'
+import { useT } from '../../hooks/useLanguage'
 
 const MIN_YEAR = 860
 const MAX_YEAR = 2013
@@ -14,16 +15,17 @@ const extractYear = (isoDateStr) => {
 
 export function YearFilter() {
   const { filters, setFilter } = useFilters()
+  const t = useT()
 
   const fromYear = filters.year_from ?? MIN_YEAR
   const toYear = filters.year_to ?? MAX_YEAR
 
   return (
     <div>
-      <p className="filter-label">Year Range</p>
+      <p className="filter-label">{t('filter.year')}</p>
       <div className="space-y-2 mt-2">
         <div>
-          <p className="text-[9px] text-slate-500 mb-1">From</p>
+          <p className="text-[9px] text-slate-500 mb-1">{t('filter.year.from')}</p>
           <input
             type="date"
             value={toDateValue(fromYear)}
@@ -39,7 +41,7 @@ export function YearFilter() {
           />
         </div>
         <div>
-          <p className="text-[9px] text-slate-500 mb-1">To</p>
+          <p className="text-[9px] text-slate-500 mb-1">{t('filter.year.to')}</p>
           <input
             type="date"
             value={toDateValue(toYear)}

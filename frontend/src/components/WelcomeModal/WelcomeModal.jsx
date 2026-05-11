@@ -1,9 +1,19 @@
 import { useState, useEffect } from 'react'
+import { useStore } from '../../store'
+import { useT } from '../../hooks/useLanguage'
 
 const STORAGE_KEY = 'meteorite_atlas_welcomed'
 
+const LANGUAGES = [
+  { code: 'en', flag: '🇬🇧', label: 'English' },
+  { code: 'es', flag: '🇪🇸', label: 'Español' },
+]
+
 export function WelcomeModal() {
   const [visible, setVisible] = useState(false)
+  const language = useStore((s) => s.language)
+  const setLanguage = useStore((s) => s.setLanguage)
+  const t = useT()
 
   useEffect(() => {
     if (!localStorage.getItem(STORAGE_KEY)) {
@@ -18,6 +28,13 @@ export function WelcomeModal() {
 
   if (!visible) return null
 
+  const tips = [
+    t('modal.tip1'),
+    t('modal.tip2'),
+    t('modal.tip3'),
+    t('modal.tip4'),
+  ]
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
@@ -28,27 +45,34 @@ export function WelcomeModal() {
       />
 
       <div className="relative z-10 max-w-md w-full mx-4 p-7 bg-slate-900/95 border border-slate-700/40 rounded-2xl shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1.5 h-7 bg-sky-400 rounded-full flex-shrink-0" />
-          <h1 className="text-lg font-bold tracking-[0.15em] text-slate-100 uppercase">
-            Meteorite Atlas
-          </h1>
+        {/* Header + language selector */}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-7 bg-sky-400 rounded-full flex-shrink-0" />
+            <h1 className="text-lg font-bold tracking-[0.15em] text-slate-100 uppercase">
+              {t('header.title')}
+            </h1>
+          </div>
+          <div className="flex gap-2">
+            {LANGUAGES.map(({ code, flag, label }) => (
+              <button
+                key={code}
+                onClick={() => setLanguage(code)}
+                title={label}
+                className={`text-xl transition-opacity ${language === code ? 'opacity-100' : 'opacity-30 hover:opacity-60'}`}
+              >
+                {flag}
+              </button>
+            ))}
+          </div>
         </div>
 
         <p className="text-sm text-slate-300 leading-relaxed mb-5">
-          Explore over <span className="text-sky-400 font-medium">45,000 meteorite impacts</span> recorded
-          worldwide, visualized on an interactive 3D globe powered by NASA open data.
+          {t('modal.description')}
         </p>
 
-        {/* How to use */}
         <ul className="space-y-2.5 mb-6">
-          {[
-            'Rotate and zoom the globe to navigate impact sites',
-            'Click any point to see name, mass, year, class and coordinates',
-            'Use the Filters panel to narrow by fall type, mass, year or class',
-            'The timeline at the bottom shows the distribution of impacts by century',
-          ].map((tip) => (
+          {tips.map((tip) => (
             <li key={tip} className="flex items-start gap-2.5">
               <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-sky-400 flex-shrink-0" />
               <span className="text-[13px] text-slate-400 leading-snug">{tip}</span>
@@ -56,19 +80,18 @@ export function WelcomeModal() {
           ))}
         </ul>
 
-        {/* Legend */}
         <div className="flex gap-4 mb-6 text-[11px] text-slate-500">
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0" /> Fell (observed)
+            <span className="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0" />
+            {t('modal.legend.fell')}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0" /> Found
+            <span className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0" />
+            {t('modal.legend.found')}
           </span>
         </div>
 
-        <p className="text-[11px] text-slate-600 mb-5">
-          Data: NASA Meteorite Landings dataset · 860 AD – 2013 · scientific catalogue only
-        </p>
+        <p className="text-[11px] text-slate-600 mb-5">{t('modal.data_source')}</p>
 
         <button
           onClick={dismiss}
@@ -78,7 +101,7 @@ export function WelcomeModal() {
             hover:bg-sky-500/30 hover:border-sky-500/60 transition-all
           "
         >
-          Start Exploring
+          {t('modal.start')}
         </button>
       </div>
     </div>

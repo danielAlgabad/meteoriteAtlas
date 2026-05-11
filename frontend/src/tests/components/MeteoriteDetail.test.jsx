@@ -15,6 +15,8 @@ vi.mock('../../store', () => ({
       setSelectedId: mocks.setSelectedId,
       isFilterPanelOpen: true,
       toggleFilterPanel: vi.fn(),
+      language: 'en',
+      setLanguage: vi.fn(),
     })
   ),
 }))
