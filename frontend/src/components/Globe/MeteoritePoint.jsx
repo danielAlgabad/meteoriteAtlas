@@ -50,6 +50,19 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
     [points]
   )
 
+  // Surface normals (unit vectors) for each point — used every frame to test
+  // whether the point is on the camera-facing hemisphere.
+  const normals = useMemo(() => {
+    const arr = new Float32Array(points.length * 3)
+    points.forEach((m, i) => {
+      const [x, y, z] = latLonToVec3(m.lat, m.lon, 1)
+      arr[i * 3] = x
+      arr[i * 3 + 1] = y
+      arr[i * 3 + 2] = z
+    })
+    return arr
+  }, [points])
+
   // Set initial instance matrices (position + reference scale)
   useEffect(() => {
     const mesh = meshRef.current
@@ -85,9 +98,10 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
   }, [points, selectedId, baseColor])
 
-  // Each frame: rescale point sizes to stay visually constant as zoom changes.
-  // Only the diagonal scale elements (col-major indices 0, 5, 10) are updated;
-  // position elements (12, 13, 14) are left untouched — fast and safe.
+  // Each frame: update scale for each point.
+  // Points on the back hemisphere (dot product ≤ 0 with camera direction) get
+  // scale = 0 — invisible and unreachable by raycasting. Front-facing points
+  // keep zoom-proportional scale so they appear constant size on screen.
   useFrame(({ camera }) => {
     const mesh = meshRef.current
     if (!mesh || points.length === 0) return
@@ -95,16 +109,20 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
     const dist = camera.position.length()
     const zoom = dist / REF_DIST
     const arr = mesh.instanceMatrix.array
-    // Guard: mesh.count may briefly exceed baseScales.length before the
-    // useEffect that sets mesh.count = points.length has run.
-    const count = Math.min(mesh.count, baseScales.length)
 
+    // Camera direction as unit vector (from globe center toward camera)
+    const cx = camera.position.x / dist
+    const cy = camera.position.y / dist
+    const cz = camera.position.z / dist
+
+    const count = Math.min(mesh.count, baseScales.length)
     for (let i = 0; i < count; i++) {
-      const s = baseScales[i] * zoom
+      const dot = normals[i * 3] * cx + normals[i * 3 + 1] * cy + normals[i * 3 + 2] * cz
+      const s = dot > 0 ? baseScales[i] * zoom : 0
       const base = i * 16
-      arr[base] = s       // [0][0] scale x
-      arr[base + 5] = s   // [1][1] scale y
-      arr[base + 10] = s  // [2][2] scale z
+      arr[base] = s
+      arr[base + 5] = s
+      arr[base + 10] = s
     }
 
     mesh.instanceMatrix.needsUpdate = true
