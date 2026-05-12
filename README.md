@@ -9,7 +9,7 @@ Interactive dashboard of meteorite impacts with a 3D globe, powered by real NASA
 | Backend | FastAPI + SQLite + Python 3.11 |
 | Frontend | React 18 + React Three Fiber + Three.js |
 | Deployment | Railway (backend) + Vercel (frontend) |
-| Data | NASA Meteorite Landing API |
+| Data | NASA Meteorite Landings open dataset |
 
 ## Running locally
 

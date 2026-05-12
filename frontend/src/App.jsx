@@ -7,6 +7,7 @@ import { FilterPanel } from './components/FilterPanel/FilterPanel'
 import { MeteoriteDetail } from './components/MeteoriteDetail/MeteoriteDetail'
 import { Timeline } from './components/Timeline/Timeline'
 import { WelcomeModal } from './components/WelcomeModal/WelcomeModal'
+import { CookieBanner } from './components/CookieBanner/CookieBanner'
 
 const LANGUAGES = [
   { code: 'en', flag: '🇬🇧', label: 'English' },
@@ -81,6 +82,7 @@ export default function App() {
   return (
     <div className="relative w-full h-full bg-space-900">
       <WelcomeModal />
+      <CookieBanner />
 
       {/* Full-screen globe */}
       <Globe meteorites={meteorites} isLoading={isLoading} />

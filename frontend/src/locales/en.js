@@ -46,4 +46,23 @@ export const en = {
   'modal.data_source': 'Data: NASA Meteorite Landings dataset · 860 AD – 2013 · scientific catalogue only',
   'modal.start': 'Start Exploring',
   'modal.language': 'Language',
+
+  'cookie.text': 'We use localStorage to save your language preference and visit history. No personal data is collected or transmitted.',
+  'cookie.accept': 'Accept',
+  'cookie.decline': 'Decline',
+  'cookie.privacy_link': 'Privacy Policy',
+
+  'privacy.title': 'Privacy Policy',
+  'privacy.close': 'Close',
+  'privacy.updated': 'Last updated: May 2026',
+  'privacy.s1.title': 'What We Store',
+  'privacy.s1.body': 'This application stores three entries in your browser\'s localStorage: your language preference, whether you have seen the welcome screen, and your cookie consent choice. No cookies in the traditional sense are set.',
+  'privacy.s2.title': 'What We Do Not Collect',
+  'privacy.s2.body': 'No personal data, IP addresses, analytics, or usage tracking of any kind are collected. There are no user accounts, no login, and no data is ever sent to any third-party service.',
+  'privacy.s3.title': 'API Requests',
+  'privacy.s3.body': 'The app fetches meteorite data from our read-only backend (hosted on Railway). These requests contain no personal information — only filter parameters such as year range or meteorite class.',
+  'privacy.s4.title': 'Data Source',
+  'privacy.s4.body': 'All meteorite data comes from the NASA Meteorite Landings open dataset, a public scientific catalogue. No proprietary or sensitive data is involved.',
+  'privacy.s5.title': 'Your Rights',
+  'privacy.s5.body': 'You can clear all locally stored preferences at any time by opening your browser\'s developer tools and clearing localStorage for this site.',
 }

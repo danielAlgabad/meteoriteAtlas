@@ -46,4 +46,23 @@ export const es = {
   'modal.data_source': 'Datos: NASA Meteorite Landings dataset · 860 d.C. – 2013 · solo catálogo científico',
   'modal.start': 'Empezar a explorar',
   'modal.language': 'Idioma',
+
+  'cookie.text': 'Usamos localStorage para guardar tu preferencia de idioma y el historial de visitas. No se recogen ni transmiten datos personales.',
+  'cookie.accept': 'Aceptar',
+  'cookie.decline': 'Rechazar',
+  'cookie.privacy_link': 'Política de privacidad',
+
+  'privacy.title': 'Política de privacidad',
+  'privacy.close': 'Cerrar',
+  'privacy.updated': 'Última actualización: mayo de 2026',
+  'privacy.s1.title': 'Qué almacenamos',
+  'privacy.s1.body': 'Esta aplicación guarda tres entradas en el localStorage de tu navegador: tu preferencia de idioma, si has visto la pantalla de bienvenida y tu decisión sobre el consentimiento de cookies. No se establecen cookies en el sentido tradicional.',
+  'privacy.s2.title': 'Qué no recopilamos',
+  'privacy.s2.body': 'No se recopilan datos personales, direcciones IP, análisis ni ningún tipo de seguimiento de uso. No hay cuentas de usuario, no hay inicio de sesión y ningún dato se envía jamás a ningún servicio de terceros.',
+  'privacy.s3.title': 'Peticiones a la API',
+  'privacy.s3.body': 'La aplicación obtiene datos de meteoritos de nuestro backend de solo lectura (alojado en Railway). Estas peticiones no contienen información personal, solo parámetros de filtro como el rango de años o la clase del meteorito.',
+  'privacy.s4.title': 'Fuente de datos',
+  'privacy.s4.body': 'Todos los datos de meteoritos provienen del conjunto de datos abiertos NASA Meteorite Landings, un catálogo científico público. No se maneja ningún dato propietario ni sensible.',
+  'privacy.s5.title': 'Tus derechos',
+  'privacy.s5.body': 'Puedes eliminar todas las preferencias almacenadas localmente en cualquier momento abriendo las herramientas de desarrollo de tu navegador y limpiando el localStorage de este sitio.',
 }
