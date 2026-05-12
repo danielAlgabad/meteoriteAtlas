@@ -19,8 +19,8 @@ export const useStore = create((set) => ({
     })),
   resetFilters: () => set({ filters: { ...INITIAL_FILTERS } }),
 
-  pointLimit: 10000,
-  setPointLimit: (limit) => set({ pointLimit: limit }),
+  viewport: { lat: 0, lon: -90, radius: 76 },
+  setViewport: (v) => set({ viewport: v }),
 
   selectedId: null,
   setSelectedId: (id) => set({ selectedId: id }),

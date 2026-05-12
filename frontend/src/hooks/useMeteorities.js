@@ -11,17 +11,22 @@ function toApiFilters(filters) {
 
 export function useGlobeData() {
   const filters = useStore((s) => s.filters)
-  const pointLimit = useStore((s) => s.pointLimit)
+  const viewport = useStore((s) => s.viewport)
 
   return useQuery({
-    queryKey: ['globe', filters, pointLimit],
+    queryKey: ['globe', filters, viewport],
     queryFn: async () => {
-      const apiFilters = toApiFilters(filters)
+      const apiFilters = {
+        ...toApiFilters(filters),
+        lat_center: viewport?.lat,
+        lon_center: viewport?.lon,
+        radius_deg: viewport?.radius,
+      }
 
       // First request determines total count
       const first = await fetchMeteorities({ ...apiFilters, page: 1, size: 500 })
-      const total = Math.min(first.total || 0, pointLimit)
-      const pageCount = Math.min(Math.ceil(total / 500), Math.ceil(pointLimit / 500))
+      const total = first.total || 0
+      const pageCount = Math.ceil(total / 500)
 
       // Fetch remaining pages in parallel
       const remaining =
@@ -39,9 +44,9 @@ export function useGlobeData() {
         .flatMap((r) => r.items || [])
         .filter((m) => m.lat != null && m.lon != null)
         .filter((m) => filters.fall.length === 0 || filters.fall.includes(m.fall))
-        .slice(0, pointLimit)
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (prev) => prev,
   })
 }
 

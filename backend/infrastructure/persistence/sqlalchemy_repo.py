@@ -146,6 +146,28 @@ class SQLAlchemyMeteoriteRepository:
             query = query.where(MeteoriteModel.fall == filters.fall)
         if filters.meteorite_class:
             query = query.where(MeteoriteModel.meteorite_class == filters.meteorite_class)
+        if (
+            filters.lat_center is not None
+            and filters.lon_center is not None
+            and filters.radius_deg is not None
+        ):
+            lat_min = max(-90.0, filters.lat_center - filters.radius_deg)
+            lat_max = min(90.0, filters.lat_center + filters.radius_deg)
+            query = query.where(MeteoriteModel.lat >= lat_min)
+            query = query.where(MeteoriteModel.lat <= lat_max)
+            lon_min = filters.lon_center - filters.radius_deg
+            lon_max = filters.lon_center + filters.radius_deg
+            if lon_max > 180:
+                query = query.where(
+                    (MeteoriteModel.lon >= lon_min) | (MeteoriteModel.lon <= lon_max - 360)
+                )
+            elif lon_min < -180:
+                query = query.where(
+                    (MeteoriteModel.lon <= lon_max) | (MeteoriteModel.lon >= lon_min + 360)
+                )
+            else:
+                query = query.where(MeteoriteModel.lon >= lon_min)
+                query = query.where(MeteoriteModel.lon <= lon_max)
         return query
 
     def _to_entity(self, row: MeteoriteModel) -> Meteorite:

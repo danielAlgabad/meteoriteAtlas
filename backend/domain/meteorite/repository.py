@@ -17,6 +17,9 @@ class MeteoriteFilters:
     year_to: int | None = None
     fall: str | None = None          # "Fell" | "Found"
     meteorite_class: str | None = None
+    lat_center: float | None = None
+    lon_center: float | None = None
+    radius_deg: float | None = None
 
     def __post_init__(self) -> None:
         if self.size > 500:

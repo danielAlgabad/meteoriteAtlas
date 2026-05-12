@@ -20,9 +20,6 @@ export const en = {
   'filter.year': 'Year Range',
   'filter.year.from': 'From',
   'filter.year.to': 'To',
-  'filter.max_points': 'Max Points',
-  'filter.slow_warning': 'Higher values may slow your browser',
-
   'detail.loading': 'Loading…',
   'detail.unknown': 'Unknown',
   'detail.more_info': 'More info ↗',

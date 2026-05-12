@@ -20,9 +20,6 @@ export const es = {
   'filter.year': 'Rango de años',
   'filter.year.from': 'Desde',
   'filter.year.to': 'Hasta',
-  'filter.max_points': 'Máx. puntos',
-  'filter.slow_warning': 'Valores altos pueden ralentizar tu navegador',
-
   'detail.loading': 'Cargando…',
   'detail.unknown': 'Desconocido',
   'detail.more_info': 'Más info ↗',

@@ -27,15 +27,14 @@ vi.mock('../../store', () => {
   }
   const setFilter = vi.fn()
   const resetFilters = vi.fn()
-  const setPointLimit = vi.fn()
   return {
     useStore: vi.fn((selector) =>
       selector({
         filters,
         setFilter,
         resetFilters,
-        pointLimit: 10000,
-        setPointLimit,
+        viewport: { lat: 0, lon: -90, radius: 76 },
+        setViewport: vi.fn(),
         isFilterPanelOpen: true,
         toggleFilterPanel: vi.fn(),
         selectedId: null,

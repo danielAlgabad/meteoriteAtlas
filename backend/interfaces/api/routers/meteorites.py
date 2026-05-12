@@ -43,6 +43,9 @@ async def list_meteorites(
     year_to: int | None = Query(None),
     fall: str | None = Query(None, pattern="^(Fell|Found)$"),
     meteorite_class: str | None = Query(None),
+    lat_center: float | None = Query(None, ge=-90, le=90),
+    lon_center: float | None = Query(None, ge=-180, le=180),
+    radius_deg: float | None = Query(None, ge=0, le=180),
     repo=Depends(get_repo),
 ):
     filters = MeteoriteFilters(
@@ -54,6 +57,9 @@ async def list_meteorites(
         year_to=year_to,
         fall=fall,
         meteorite_class=meteorite_class,
+        lat_center=lat_center,
+        lon_center=lon_center,
+        radius_deg=radius_deg,
     )
     result = await GetMeteoritesUseCase(repo).execute(filters)
     return MeteoritePageResponse(
