@@ -38,6 +38,13 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
   const meshRef = useRef()
   const baseColor = useMemo(() => new THREE.Color(color), [color])
 
+  // Capacity only grows — never shrinks. Shrinking args triggers InstancedMesh
+  // recreation in R3F, which destroys pointer-event state mid-interaction and
+  // leaves the mesh without matrices until the next useEffect fires.
+  const peakCountRef = useRef(0)
+  const instanceCapacity = Math.max(peakCountRef.current, points.length)
+  peakCountRef.current = instanceCapacity
+
   const baseScales = useMemo(
     () => Float32Array.from(points.map((m) => BASE_SCALE * getMassScale(m.mass))),
     [points]
@@ -88,8 +95,11 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
     const dist = camera.position.length()
     const zoom = dist / REF_DIST
     const arr = mesh.instanceMatrix.array
+    // Guard: mesh.count may briefly exceed baseScales.length before the
+    // useEffect that sets mesh.count = points.length has run.
+    const count = Math.min(mesh.count, baseScales.length)
 
-    for (let i = 0; i < mesh.count; i++) {
+    for (let i = 0; i < count; i++) {
       const s = baseScales[i] * zoom
       const base = i * 16
       arr[base] = s       // [0][0] scale x
@@ -108,14 +118,14 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
 
   const handlePointerUp = useCallback(
     (e) => {
-      e.stopPropagation()
       if (!downPos.current) return
       const dx = e.nativeEvent.clientX - downPos.current.x
       const dy = e.nativeEvent.clientY - downPos.current.y
       downPos.current = null
       if (dx * dx + dy * dy > 25) return
-      const m = points[e.instanceId]
-      if (m) onClickPoint(m.id)
+      if (e.instanceId == null || e.instanceId >= points.length) return
+      e.stopPropagation()
+      onClickPoint(points[e.instanceId].id)
     },
     [points, onClickPoint]
   )
@@ -125,7 +135,7 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
   return (
     <instancedMesh
       ref={meshRef}
-      args={[null, null, points.length]}
+      args={[null, null, instanceCapacity]}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
     >
