@@ -5,8 +5,8 @@ import { useT } from '../../hooks/useLanguage'
 const STORAGE_KEY = 'meteorite_atlas_welcomed'
 
 const LANGUAGES = [
-  { code: 'en', flag: '🇬🇧', label: 'English' },
-  { code: 'es', flag: '🇪🇸', label: 'Español' },
+  { code: 'en', label: 'EN' },
+  { code: 'es', label: 'ES' },
 ]
 
 export function WelcomeModal() {
@@ -53,15 +53,19 @@ export function WelcomeModal() {
               {t('header.title')}
             </h1>
           </div>
-          <div className="flex gap-2">
-            {LANGUAGES.map(({ code, flag, label }) => (
+          <div className="flex gap-1">
+            {LANGUAGES.map(({ code, label }) => (
               <button
                 key={code}
                 onClick={() => setLanguage(code)}
-                title={label}
-                className={`text-xl transition-opacity ${language === code ? 'opacity-100' : 'opacity-30 hover:opacity-60'}`}
+                className={`
+                  px-2 py-1 rounded text-[11px] font-bold tracking-wider transition-all
+                  ${language === code
+                    ? 'text-sky-300 bg-sky-500/15 border border-sky-500/40'
+                    : 'text-slate-500 hover:text-slate-300 border border-transparent'}
+                `}
               >
-                {flag}
+                {label}
               </button>
             ))}
           </div>

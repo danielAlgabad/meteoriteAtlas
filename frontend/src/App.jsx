@@ -10,8 +10,8 @@ import { WelcomeModal } from './components/WelcomeModal/WelcomeModal'
 import { CookieBanner } from './components/CookieBanner/CookieBanner'
 
 const LANGUAGES = [
-  { code: 'en', flag: '🇬🇧', label: 'English' },
-  { code: 'es', flag: '🇪🇸', label: 'Español' },
+  { code: 'en', label: 'EN' },
+  { code: 'es', label: 'ES' },
 ]
 
 function Header({ pointCount, isLoading, total }) {
@@ -32,15 +32,19 @@ function Header({ pointCount, isLoading, total }) {
         <h1 className="text-base font-bold tracking-[0.15em] text-slate-100 uppercase">
           {t('header.title')}
         </h1>
-        <div className="flex gap-1.5">
-          {LANGUAGES.map(({ code, flag, label }) => (
+        <div className="flex gap-1">
+          {LANGUAGES.map(({ code, label }) => (
             <button
               key={code}
               onClick={() => setLanguage(code)}
-              title={label}
-              className={`text-base leading-none transition-opacity ${language === code ? 'opacity-100' : 'opacity-30 hover:opacity-70'}`}
+              className={`
+                px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider transition-all
+                ${language === code
+                  ? 'text-sky-300 bg-sky-500/15 border border-sky-500/40'
+                  : 'text-slate-500 hover:text-slate-300 border border-transparent'}
+              `}
             >
-              {flag}
+              {label}
             </button>
           ))}
         </div>
