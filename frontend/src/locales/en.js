@@ -47,7 +47,7 @@ export const en = {
   'modal.start': 'Start Exploring',
   'modal.language': 'Language',
 
-  'cookie.text': 'We use localStorage to save your language preference and visit history. No personal data is collected or transmitted.',
+  'cookie.text': 'We use local storage to save your language preference and visit history. No personal data is collected or transmitted.',
   'cookie.accept': 'Accept',
   'cookie.decline': 'Decline',
   'cookie.privacy_link': 'Privacy Policy',
@@ -56,7 +56,7 @@ export const en = {
   'privacy.close': 'Close',
   'privacy.updated': 'Last updated: May 2026',
   'privacy.s1.title': 'What We Store',
-  'privacy.s1.body': 'This application stores three entries in your browser\'s localStorage: your language preference, whether you have seen the welcome screen, and your cookie consent choice. No cookies in the traditional sense are set.',
+  'privacy.s1.body': 'This application stores three entries in your browser\'s local storage: your language preference, whether you have seen the welcome screen, and your cookie consent choice. No cookies in the traditional sense are set.',
   'privacy.s2.title': 'What We Do Not Collect',
   'privacy.s2.body': 'No personal data, IP addresses, analytics, or usage tracking of any kind are collected. There are no user accounts, no login, and no data is ever sent to any third-party service.',
   'privacy.s3.title': 'API Requests',
@@ -64,5 +64,5 @@ export const en = {
   'privacy.s4.title': 'Data Source',
   'privacy.s4.body': 'All meteorite data comes from the NASA Meteorite Landings open dataset, a public scientific catalogue. No proprietary or sensitive data is involved.',
   'privacy.s5.title': 'Your Rights',
-  'privacy.s5.body': 'You can clear all locally stored preferences at any time by opening your browser\'s developer tools and clearing localStorage for this site.',
+  'privacy.s5.body': 'You can clear all locally stored preferences at any time by opening your browser\'s developer tools and clearing local storage for this site.',
 }
