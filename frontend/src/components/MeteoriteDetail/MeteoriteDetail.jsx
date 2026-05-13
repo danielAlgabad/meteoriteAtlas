@@ -82,7 +82,7 @@ export function MeteoriteDetail() {
                   : 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25'}
               `}
             >
-              {meteorite.fall}
+              {t(`fall.${meteorite.fall}`)}
             </span>
           )}
 

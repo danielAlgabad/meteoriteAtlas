@@ -8,19 +8,16 @@ import {
   Cell,
 } from 'recharts'
 import { useFilters } from '../../hooks/useFilters'
+import { useT } from '../../hooks/useLanguage'
 
-function centuryToYearRange(label) {
-  const n = parseInt(label)
-  return [(n - 1) * 100, n * 100 - 1]
-}
-
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, t }) {
   if (!active || !payload?.length) return null
+  const { n, count } = payload[0].payload
   return (
     <div className="bg-slate-900/95 border border-slate-700 rounded px-3 py-2 text-xs">
-      <p className="text-slate-400 mb-1">{label} century</p>
+      <p className="text-slate-400 mb-1">{t('timeline.century', n)}</p>
       <p className="text-sky-400 font-medium">
-        {payload[0].value.toLocaleString()} meteorites
+        {t('timeline.meteorites', { count: count.toLocaleString() })}
       </p>
     </div>
   )
@@ -28,6 +25,7 @@ function CustomTooltip({ active, payload, label }) {
 
 export function TimelineChart({ byCentury }) {
   const { setFilter } = useFilters()
+  const t = useT()
 
   const data = Object.entries(byCentury)
     .map(([century, count]) => ({ century, count, n: parseInt(century) }))
@@ -35,10 +33,9 @@ export function TimelineChart({ byCentury }) {
 
   const handleBarClick = (entry) => {
     if (!entry?.activePayload?.[0]) return
-    const label = entry.activePayload[0].payload.century
-    const [from, to] = centuryToYearRange(label)
-    setFilter('year_from', from)
-    setFilter('year_to', to)
+    const n = entry.activePayload[0].payload.n
+    setFilter('year_from', (n - 1) * 100)
+    setFilter('year_to', n * 100 - 1)
   }
 
   const maxCount = Math.max(...data.map((d) => d.count))
@@ -52,13 +49,13 @@ export function TimelineChart({ byCentury }) {
         style={{ cursor: 'pointer' }}
       >
         <XAxis
-          dataKey="century"
+          dataKey="n"
           tick={{ fill: '#475569', fontSize: 9 }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis hide domain={[0, maxCount * 1.1]} />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99,102,241,0.08)' }} />
+        <Tooltip content={<CustomTooltip t={t} />} cursor={{ fill: 'rgba(99,102,241,0.08)' }} />
         <Bar dataKey="count" radius={[2, 2, 0, 0]} maxBarSize={28}>
           {data.map((entry, i) => (
             <Cell

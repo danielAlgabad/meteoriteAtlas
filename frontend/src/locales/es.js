@@ -32,6 +32,11 @@ export const es = {
   'detail.coordinates': 'Coordenadas',
 
   'timeline.title': 'Impactos por siglo',
+  'timeline.century': (n) => `Siglo ${n}`,
+  'timeline.meteorites': '{{count}} meteoritos',
+
+  'fall.Fell': 'Caído',
+  'fall.Found': 'Encontrado',
 
   'modal.description': 'Explora más de 45.000 impactos de meteoritos registrados en todo el mundo, visualizados en un globo 3D interactivo con datos abiertos de la NASA.',
   'modal.tip1': 'Rota y haz zoom en el globo para explorar los lugares de impacto',

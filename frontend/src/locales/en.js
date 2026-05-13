@@ -32,6 +32,14 @@ export const en = {
   'detail.coordinates': 'Coordinates',
 
   'timeline.title': 'Impacts by Century',
+  'timeline.century': (n) => {
+    const s = n % 100 >= 11 && n % 100 <= 13 ? 'th' : { 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th'
+    return `${n}${s} century`
+  },
+  'timeline.meteorites': '{{count}} meteorites',
+
+  'fall.Fell': 'Fell',
+  'fall.Found': 'Found',
 
   'modal.description': 'Explore over 45,000 meteorite impacts recorded worldwide, visualized on an interactive 3D globe powered by NASA open data.',
   'modal.tip1': 'Rotate and zoom the globe to navigate impact sites',

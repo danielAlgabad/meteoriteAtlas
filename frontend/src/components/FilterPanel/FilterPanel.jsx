@@ -91,7 +91,7 @@ export function FilterPanel() {
                   ${isLast ? 'cursor-not-allowed' : ''}
                 `}
               >
-                {type}
+                {t(`fall.${type}`)}
               </button>
             )
           })}

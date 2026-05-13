@@ -20,4 +20,12 @@ describe('useT (English)', () => {
     const { result } = renderHook(() => useT())
     expect(result.current('nonexistent.key')).toBe('nonexistent.key')
   })
+
+  test('calls function-valued locale keys with the argument', () => {
+    const { result } = renderHook(() => useT())
+    expect(result.current('timeline.century', 21)).toBe('21st century')
+    expect(result.current('timeline.century', 20)).toBe('20th century')
+    expect(result.current('timeline.century', 11)).toBe('11th century')
+    expect(result.current('timeline.century', 2)).toBe('2nd century')
+  })
 })

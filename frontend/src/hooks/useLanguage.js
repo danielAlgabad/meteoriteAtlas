@@ -9,7 +9,8 @@ export function useT() {
   const locale = LOCALES[language] ?? en
 
   return (key, vars = {}) => {
-    const str = locale[key] ?? en[key] ?? key
-    return str.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? `{{${k}}}`))
+    const val = locale[key] ?? en[key] ?? key
+    if (typeof val === 'function') return val(vars)
+    return val.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? `{{${k}}}`))
   }
 }
