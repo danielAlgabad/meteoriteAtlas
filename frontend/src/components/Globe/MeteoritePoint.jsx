@@ -131,17 +131,28 @@ function PointGroup({ points, color, onClickPoint, selectedId }) {
   const downPos = useRef(null)
 
   const handlePointerDown = useCallback((e) => {
+    console.log('[MP] down instanceId=%o points.length=%o', e.instanceId, points.length)
     downPos.current = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY }
-  }, [])
+  }, [points.length])
 
   const handlePointerUp = useCallback(
     (e) => {
-      if (!downPos.current) return
+      if (!downPos.current) {
+        console.log('[MP] up — skipped: no matching pointerDown (instanceId=%o)', e.instanceId)
+        return
+      }
       const dx = e.nativeEvent.clientX - downPos.current.x
       const dy = e.nativeEvent.clientY - downPos.current.y
       downPos.current = null
-      if (dx * dx + dy * dy > 25) return
-      if (e.instanceId == null || e.instanceId >= points.length) return
+      if (dx * dx + dy * dy > 25) {
+        console.log('[MP] up — skipped: moved too much dx=%o dy=%o', dx.toFixed(1), dy.toFixed(1))
+        return
+      }
+      if (e.instanceId == null || e.instanceId >= points.length) {
+        console.log('[MP] up — skipped: instanceId=%o out of range (length=%o)', e.instanceId, points.length)
+        return
+      }
+      console.log('[MP] up — selecting id=%o (instanceId=%o)', points[e.instanceId].id, e.instanceId)
       e.stopPropagation()
       onClickPoint(points[e.instanceId].id)
     },
